@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IgniteServer", "Ignite-Clie
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IgniteClient", "IgniteClient\IgniteClient.csproj", "{97EEA272-838F-4B45-B66E-9075B8EA955C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IgniteAPI", "IgniteAPI\IgniteAPI.csproj", "{B87470E8-007F-4150-8FDE-488E91EC3B22}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IgniteAPI", "IgniteAPI\IgniteAPI.csproj", "{B87470E8-007F-4150-8FDE-488E91EC3B22}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
