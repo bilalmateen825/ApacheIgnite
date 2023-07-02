@@ -1,0 +1,51 @@
+﻿@page
+@model IndexModel
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.7/signalr.min.js"></script>
+
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div id="chatContainer">
+    <input type="text" id="messageInput" />
+    <button id="sendButton">Send</button>
+    <ul id="messagesList"></ul>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+
+        debugger;
+        var connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7120/OMSHub").build();
+
+        connection.start().then(function () 
+        {
+            console.log("SignalR connected.");
+
+            $("#sendButton").prop("disabled", false);
+        }).catch(function (err) {
+            console.error(err.toString());
+        });
+
+        connection.on("ReceiveMessage", function (user, message) {
+            var li = $("<li></li>").text(user + ": " + message);
+            $("#messagesList").append(li);
+        });
+
+        $("#sendButton").on("click", function (event) {
+            var user = "User";
+            var messageInput = $("#messageInput");
+            var message = messageInput.val();
+
+            connection.invoke("SendMessageAsync", user, message).catch(function (err) {
+                console.error(err.toString());
+            });
+
+            messageInput.val("");
+            event.preventDefault();
+        });
+    });
+</script>

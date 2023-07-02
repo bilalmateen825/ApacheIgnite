@@ -1,0 +1,41 @@
+﻿@page "/counter"
+@using Microsoft.AspNetCore.SignalR.Client
+@inject NavigationManager NavManager
+@implements IAsyncDisposable
+
+<PageTitle>Vote Counter</PageTitle>
+
+<h1>Vote</h1>
+
+<p role="status">Count: @currentCount</p>
+
+
+@code 
+{
+    private int currentCount = 0;
+    private HubConnection? hubConnection;
+
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+        .WithUrl(NavManager.ToAbsoluteUri("/CounterHub"))
+        .WithAutomaticReconnect()
+        .Build();
+
+        hubConnection.On<string, int>("CounterIncrement", (user, value) =>
+        {
+            currentCount += value;
+            InvokeAsync(StateHasChanged);
+        });
+
+        await hubConnection.StartAsync();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+}

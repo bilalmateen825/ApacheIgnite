@@ -29,6 +29,12 @@ namespace IgniteServer
 
             // Start listening for messages
             server.StartListening();
+        
+            //for (int i = 0; i < 10000; i++)
+            //{
+            //    server.SendMessage("OMS", "How are you?");
+            //    server.SendMessage("RMS", "How are you?");
+            //}
 
             System.Console.WriteLine("Message sent from Server.");
 

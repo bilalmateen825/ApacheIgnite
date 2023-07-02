@@ -1,0 +1,85 @@
+﻿@page "/"
+@*page directive*@
+
+@using Microsoft.AspNetCore.SignalR.Client
+
+@inject NavigationManager NavManager
+@* injecting Nav Manager using DI*@
+
+@implements IAsyncDisposable
+@* Async this when we go off from this page. Disconnect from our hub*@
+
+<div class="form-group">
+    <label>
+        User: <input @bind="userInput" />
+    </label>
+</div>
+
+<div class="form-group">
+    <label>
+        Message: <input @bind="messageInput" />
+    </label>
+</div>
+
+<button @onclick="Send" disabled="@(!IsConnected)">Send</button>
+
+<hr />
+
+<ul>
+    @foreach(string msg in messages)
+    {
+        <li>@msg</li>
+    }
+</ul>
+
+@code {
+    private HubConnection? hubConnection; //this connect to our hub (our web server)
+    private List<string> messages = new(); //List of all the message we get from Chat and we display on the page.
+    private string? userInput;
+    private string? messageInput;
+
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+        .WithUrl(NavManager.ToAbsoluteUri("/ChatHub")) //We give responsibility to NavagitionManager that you know the URL of the website. we want it to grab that
+        .WithAutomaticReconnect()                       //uri including this path "/chathub" EG: localhost://chathub
+        .Build();
+
+        //This is the client side.
+        //Messages received from server and it will show it to respective user when this page is loaded.
+        //capturing event
+        hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
+        {
+            var formattedMessage = $"{user} : {message}";
+            messages.Add(formattedMessage);
+            InvokeAsync(StateHasChanged); //when message is received we need to send update to page that state of the page is changed.
+        });
+
+
+        //we are making connection to server
+        await hubConnection.StartAsync();
+    }
+
+    private async Task Send()
+    {
+        if(hubConnection is not null)
+        {
+            //SendMessage is the name of the method we have in ChatHub
+            //This will go to server and say hey call "SendMessage" so that event one gets it (Broadcast)
+            await hubConnection.SendAsync("SendMessageAsync", userInput, messageInput);
+        }
+    }
+
+    public bool IsConnected => hubConnection?.State == HubConnectionState.Connected;
+
+    public async ValueTask DisposeAsync()
+    {
+        if(hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+    
+}
+
+

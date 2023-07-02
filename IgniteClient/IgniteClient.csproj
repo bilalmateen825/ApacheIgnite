@@ -8,11 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Apache.Ignite" Version="2.15.0" />
+    <ProjectReference Include="..\IgniteAPI\IgniteAPI.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\IgniteAPI\IgniteAPI.csproj" />
+    <Reference Include="Apache.Ignite.Core">
+      <HintPath>..\Ignite-Client-Server\bin\Debug\net6.0\Apache.Ignite.Core.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

@@ -110,7 +110,15 @@ namespace IgniteClient
             client.SubscribeToTopic("RMS");
 
             // Send a message
-            client.SendMessage("How are you?", "OMS");
+            //client.SendMessage("How are you?", "OMS");
+
+            //var cache = client.Ignite.GetOrCreateCache<int, Person>(CacheName);
+            //cache.QueryContinuous()
+
+            //for (int i = 0; i < 10000; i++)
+            //{
+            //    client.SendMessage("How are you?", "OMS");
+            //}
 
             System.Console.WriteLine("Message sent from Client.");
 
@@ -124,6 +132,8 @@ namespace IgniteClient
         private readonly IIgnite m_ignite;
         private readonly IMessageListener<MessageWrapper> m_messageListener;
         private readonly List<string> subscribedTopics;
+
+        public IIgnite Ignite { get; set; }
 
         public Client()
         {
@@ -182,11 +192,12 @@ namespace IgniteClient
         public void SubscribeToTopic(string topic)
         {
             // Get the messaging component
-            var messaging = m_ignite.GetMessaging();
+            var messaging = m_ignite.GetCluster().GetMessaging();
 
             // Subscribe to the specified topic
             messaging.LocalListen<MessageWrapper>(m_messageListener, topic);
-
+            messaging.RemoteListen<MessageWrapper>(m_messageListener, topic);
+            
             // Add the topic to the subscribed topics list
             subscribedTopics.Add(topic);
         }
