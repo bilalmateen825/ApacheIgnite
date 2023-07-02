@@ -41,7 +41,7 @@
     protected override async Task OnInitializedAsync()
     {
         hubConnection = new HubConnectionBuilder()
-        .WithUrl(NavManager.ToAbsoluteUri("/ChatHub")) //We give responsibility to NavagitionManager that you know the URL of the website. we want it to grab that
+        .WithUrl(NavManager.ToAbsoluteUri("/OMSHub")) //We give responsibility to NavagitionManager that you know the URL of the website. we want it to grab that
         .WithAutomaticReconnect()                       //uri including this path "/chathub" EG: localhost://chathub
         .Build();
 

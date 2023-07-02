@@ -1,8 +1,9 @@
+using Broadcaster.Classes.Ignite;
 using Broadcaster.Data;
-using Broadcaster.Hubs;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.SignalR;
 using SignalR.Common;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +11,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddSingleton<IgniteClient>(provider =>
+{
+    // Get the IHubContext<OMSHub> from the service provider
+    var hubContext = provider.GetRequiredService<IHubContext<OMSHub>>();
+
+    // Create the IgniteClient instance with the hub context
+    return new IgniteClient(hubContext);
+});
 builder.Services.AddResponseCompression(opts =>
 {
     opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/octet-stream" });
@@ -33,8 +41,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 app.MapBlazorHub();
-app.MapHub<ChatHub>("/ChatHub");
-app.MapHub<CounterHub>("/CounterHub");
+app.MapHub<OMSHub>("/OMSHub");
 
 app.MapFallbackToPage("/_Host");
 

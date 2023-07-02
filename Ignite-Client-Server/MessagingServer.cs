@@ -54,7 +54,7 @@ namespace Ignite_Client_Server
             var endpoints = new List<string>();
             int startPort = 47500;
             //int endPort = 47509;
-            int endPort = 47501;
+            int endPort = 47500;
 
             for (int port = startPort; port <= endPort; port++)
             {
@@ -174,7 +174,7 @@ namespace Ignite_Client_Server
             var messaging = m_ignite.GetMessaging();
 
             // Send the message to all nodes subscribed to the topic
-            messaging.SendOrdered(stTopic, new MessageWrapper() { Message = message, Topic = stTopic, AdditionalComment = "Client-Side" });
+            messaging.SendOrdered(new MessageWrapper() { Message = message, Topic = stTopic, AdditionalComment = "Client-Side" }, stTopic);
         }
 
         public void SubscribeToTopic(string topic)
@@ -187,6 +187,7 @@ namespace Ignite_Client_Server
 
             // Subscribe to the specified topic
             messaging.LocalListen<MessageWrapper>(topicListener, topic);
+            messaging.RemoteListen<MessageWrapper>(topicListener, topic);
 
             // Add the topic listener to the dictionary
             topicListeners.Add(topic, topicListener);

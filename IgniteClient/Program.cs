@@ -106,8 +106,6 @@ namespace IgniteClient
             Thread.Sleep(10000);
             var client = new Client();
 
-            client.SubscribeToTopic("OMS");
-            client.SubscribeToTopic("RMS");
 
             // Send a message
             //client.SendMessage("How are you?", "OMS");
@@ -144,7 +142,8 @@ namespace IgniteClient
                     IpFinder = new TcpDiscoveryStaticIpFinder
                     {
                         //The port "47500" is the default port used for node discovery in Apache Ignite, but we can modify it if necessary.
-                        Endpoints = new[] { "127.0.0.1:47500..47501" }
+                        Endpoints = new[] { "127.0.0.1:47500" }
+                        //Endpoints = new[] { "127.0.0.1:47500..47501" }
 
                         //Endpoints = new[] { "192.168.1.100:47500", "192.168.1.101:47500" } // List of server endpoints for discovery
 
@@ -178,6 +177,10 @@ namespace IgniteClient
 
             //messaging.LocalListen(messageListener, "RMS");
             //messaging.LocalListen(messageListener, "OMS");
+
+
+            SubscribeToTopic("OMS");
+            SubscribeToTopic("RMS");
         }
 
         public void SendMessage(string message, string topic)
@@ -192,11 +195,11 @@ namespace IgniteClient
         public void SubscribeToTopic(string topic)
         {
             // Get the messaging component
-            var messaging = m_ignite.GetCluster().GetMessaging();
+            var messaging = m_ignite.GetMessaging();
 
             // Subscribe to the specified topic
             messaging.LocalListen<MessageWrapper>(m_messageListener, topic);
-            messaging.RemoteListen<MessageWrapper>(m_messageListener, topic);
+            //messaging.RemoteListen<MessageWrapper>(m_messageListener, topic);
             
             // Add the topic to the subscribed topics list
             subscribedTopics.Add(topic);

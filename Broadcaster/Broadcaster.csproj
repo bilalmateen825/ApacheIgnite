@@ -17,11 +17,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="F:\Programming\SignalR\SignalR\Common\SignalR.Common.csproj" />
+    <ProjectReference Include="..\Common\SignalR.Common.csproj" />
+    <ProjectReference Include="..\IgniteAPI\IgniteAPI.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Hubs\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Apache.Ignite.Core">
+      <HintPath>..\ThirdParty\Apache.Ignite.Core.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
