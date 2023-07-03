@@ -30,7 +30,8 @@ namespace IgniteServer
             // Start listening for messages
             server.StartListening();
 
-            Thread.Sleep(20000);
+            Thread.Sleep(25000);
+
 
             for (int i = 0; i < 10000; i++)
             {

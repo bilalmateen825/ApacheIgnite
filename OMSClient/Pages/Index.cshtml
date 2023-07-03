@@ -18,8 +18,7 @@
 <script>
     $(document).ready(function () {
 
-        debugger;
-        var connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7120/OMSHub").build();
+        var connection = new signalR.HubConnectionBuilder().withUrl("http://localhost:1751/OMSHub").build();
 
         connection.start().then(function () 
         {

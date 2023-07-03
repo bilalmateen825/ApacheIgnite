@@ -10,7 +10,34 @@ using IgniteAPI;
 
 namespace Broadcaster.Classes.Ignite
 {
-    public class IgniteClient
+    public class IgniteClientHostService : IHostedService
+    {
+        private readonly IServiceProvider _serviceProvider;
+
+        public IgniteClientHostService(IServiceProvider serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
+        }
+
+        public async Task StartAsync(CancellationToken cancellationToken)
+        {
+            using var scope = _serviceProvider.CreateScope();
+            var igniteClient = scope.ServiceProvider.GetRequiredService<IgniteClient>();
+            // Perform initialization logic for MyClass here
+            await Task.CompletedTask;
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            using var scope = _serviceProvider.CreateScope();
+            var igniteClient = _serviceProvider.GetRequiredService<IgniteClient>();
+            igniteClient.Dispose();
+            // Perform cleanup logic for MyClass here
+            return Task.CompletedTask;
+        }
+    }
+
+    public class IgniteClient : IDisposable
     {
         private readonly IIgnite m_ignite;
         private readonly IMessageListener<MessageWrapper> m_messageListener;
@@ -112,6 +139,13 @@ namespace Broadcaster.Classes.Ignite
             {
                 messaging.Send(topic, new MessageWrapper { Message = message, Topic = topic });
             }
+        }
+        
+        public void Dispose()
+        {
+            UnsubscribeFromTopic("OMS");
+            UnsubscribeFromTopic("RMS");
+            m_ignite.Dispose();
         }
     }
 
